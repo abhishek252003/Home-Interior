@@ -214,7 +214,6 @@
 /* 10. WOW active */
     new WOW().init();
 
-
     
 // 11. ---- Mailchimp js --------//  
     function mailChimp() {
@@ -242,6 +241,94 @@
 
 
 
+/* 13. 360 Degree Image Viewer */
+function init360Viewers() {
+  // Initialize 360 degree viewers
+  const viewers = document.querySelectorAll('.image-360-container');
+  
+  viewers.forEach(viewer => {
+    const viewerElement = viewer.querySelector('.image-360-viewer');
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let rotateY = 0;
+    let rotateX = 0;
+    
+    // Mouse events for desktop
+    viewer.addEventListener('mousedown', function(e) {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      viewer.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', function(e) {
+      if (!isDragging) return;
+      
+      const deltaX = e.clientX - startX;
+      const deltaY = e.clientY - startY;
+      
+      // Rotate based on mouse movement
+      rotateY += deltaX * 0.5;
+      rotateX -= deltaY * 0.5;
+      
+      // Limit vertical rotation
+      rotateX = Math.max(-30, Math.min(30, rotateX));
+      
+      // Update viewer transform for 3D effect
+      viewerElement.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+      
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+    
+    document.addEventListener('mouseup', function() {
+      isDragging = false;
+      viewer.style.cursor = 'grab';
+    });
+    
+    // Touch events for mobile
+    viewer.addEventListener('touchstart', function(e) {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      e.preventDefault();
+    });
+    
+    viewer.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      
+      const deltaX = e.touches[0].clientX - startX;
+      const deltaY = e.touches[0].clientY - startY;
+      
+      // Rotate based on touch movement
+      rotateY += deltaX * 0.5;
+      rotateX -= deltaY * 0.5;
+      
+      // Limit vertical rotation
+      rotateX = Math.max(-30, Math.min(30, rotateX));
+      
+      // Update viewer transform for 3D effect
+      viewerElement.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+      
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      e.preventDefault();
+    });
+    
+    viewer.addEventListener('touchend', function() {
+      isDragging = false;
+    });
+    
+    // Set initial cursor
+    viewer.style.cursor = 'grab';
+  });
+}
 
+// Initialize 360 viewers when DOM is ready
+$(document).ready(function() {
+  init360Viewers();
+});
 
 })(jQuery);
